@@ -1,0 +1,72 @@
+import streamlit as st
+import requests
+
+def generar_historia(prompt):
+    # URL de la API de Gemini
+    api_url = "https://api.gemini.ai/v1/predict"
+
+    # Datos de la petición HTTP
+    payload = {
+        "prompt": prompt,
+        "model": "storytelling"
+    }
+
+    # Envía la petición HTTP a la API de Gemini
+    response = requests.post(api_url, json=payload)
+
+    # Verifica si la petición fue exitosa
+    if response.status_code == 200:
+        # Extrae la historia generada
+        historia = response.json()["output"]["text"]
+
+        # Regresa la historia generada
+        return historia
+    else:
+        # Maneja el error en caso de que la petición falle
+        return "Error al generar la historia. Inténtalo de nuevo."
+    
+    
+
+# Título y descripción de la aplicación
+st.title("Creador de Historias para Niños con Asperger")
+st.markdown("""
+## ¡Hola a todos los niños y niñas con Asperger!
+
+**Esta aplicación está creada especialmente para ustedes.** Aquí pueden dejar volar su imaginación y crear historias increíbles de amor, aventura, ciencia ficción, terror, comedia y mucho más.
+
+**¿Qué están esperando?**
+
+Empiecen a crear sus propias aventuras llenas de personajes fantásticos, emociones y lugares mágicos.
+
+**¡Diviértanse y expresen su creatividad sin límites!**
+""")
+
+# Selección de franja de edad
+franja_edad = st.selectbox("Selecciona tu rango de edad:", ["De 4 a 6 años", "De 7 a 9 años", "De 10 a 12 años", "De 13 a 15 años", "De 16 a 18 años", "De 19 a 25 años", "Más de 25 años"])
+
+# Selección de género
+generos = ["Amor", "Aventura", "Ciencia Ficción", "Terror", "Comedia", "Romántica", "Thriller"]
+genero_elegido = st.selectbox("Elige un género para tu historia:", generos)
+
+# Creación de personajes personalizados
+st.markdown("## Crear tu propio personaje")
+nombre_personalizado = st.text_input("Nombre del personaje")
+descripcion_personalizada = st.text_input("Descripción del personaje")
+personalidad_personalizada = st.text_input("Personalidad del personaje")
+
+# Generación de historia
+if st.button("Generar historia"):
+    prompt = f"Escribe una historia de {genero_elegido} para un niño de {franja_edad}. El personaje principal se llama {nombre_personalizado}. {descripcion_personalizada}. {personalidad_personalizada}."
+    historia = generar_historia(prompt)
+    
+    st.markdown("## Aquí está tu historia:")
+    st.write(historia)
+
+# Herramientas de escritura (simplificado)
+st.markdown("### Herramientas de Escritura")
+st.write("Aquí puedes utilizar herramientas de escritura como negrita, cursiva, corrector ortográfico, etc.")
+
+# Opciones de formato
+if st.button("Guardar historia"):
+    st.write("¡Tu historia ha sido guardada con éxito!")
+    # Aquí puedes añadir código para guardar la historia en un formato seguro
